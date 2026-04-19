@@ -1,35 +1,38 @@
 # RTT Analysis
 
-## Q1  Highest Inefficiency Ratio
-Among the cities that were reachable, Lagos had the highest inefficiency 
-ratio at 1.21, meaning my measured RTT (99.7ms) was 21% higher than the 
-theoretical minimum (82.4ms). London and Frankfurt also showed high 
-inefficiency ratios of 2.04 and 1.85 respectively, which makes sense 
-since they are relatively close to Boston but still showed about 110ms RTTs.
-Looking at submarinecablemap.com, Lagos is served by cables like ACE and
-MainOne, but these connect Africa to Europe rather than directly to North
-America. This means my packet from Boston to Lagos likely routed through
-a European hub first, adding extra distance and explaining the higher
-inefficiency compared to cities like Tokyo or Singapore. 
-Sao Paulo was completely unreachable during my measurement, returning
-100% packet loss across aall the probes
+## Q1 Highest Inefficiency Ratio
+Sendai, Japan had the highest inefficiency ratio at 14.63x, with a 
+measured RTT of 1534.2ms against a theoretical minimum of 104.9ms.
+Seoul (11.41x), London-Uni (11.43x), New Delhi (11.31x), and 
+Johannesburg (10.45x) were also flagged as high inefficiency (ratio > 3.0)
 
-## Q2  Closest to Theoretical Minimum
-Tokyo, Mumbai, Singapore, and Sydney all showed inefficiency ratios 
-below 1.0 (0.87, 0.76, 0.67, and 0.68 respectively), which is physically 
-impossible, you cannot have a measured RTT lower than the speed-of-light 
-minimum. I think this happened because Google uses a globally distributed CDN 
-(Content Delivery Network). When I sent a request to google.co.jp, Google 
-did not route my packet all the way to Tokyo instead it was answered by 
-a nearby edge server, likely in or around Boston. 
+The university servers show dramatically higher ratios than the Google
+targets because Google uses CDN edge servers near Boston, while university
+servers actually route packets to their physical location. Sendai's high
+ratio likely reflects congestion, multiple routing hops across the Pasific,
+and the overhead of crossing several autonomous systems between the US
+and Japan.
+
+## Q2 Closest to Theoretical Minimum
+frankfurt had the most realistic ratio at 1.61x, meaning its measured
+RTT (95.0ms) was only 61% above the theoretical minimum (59.0ms). Lagos
+was also reasonable at 1.15x. These results make sense both are 
+relatively well-connected to North America through major transatlantic
+cables and internet exchange points
+
+The Google targets (Tokyo, Mumbai, Singapore, Sydney) showed ratios
+below 1.0, which is physically impossible. This happened because Google's
+CDN answered requests from a nearby Boston-area edge server rather than
+routing all the way to those countries. This is actually evidence of
+excellent infrastructure, Google's network is so optimized that geography
+becomes irrelevant for its own properties.
 
 ## Q3 Why Lagos Routes Through Europe
 Africa historically lacked direct submarine cable links to North America.
-Most cables were funded and built by European telecom companies, connecting
-African coastal cities to Europe first. As a result, traffic between the
-US and Africa still transits through European internet exchange points,
-adding thousands of kilometers of unnecessary distance. This explains why
-Lagos (8,243 km from Boston) had a higher inefficiency ratio than Tokyo
-(10,794 km away), the routing path for Lagos is less direct despite the
-shorter physical distance. New cables like Equiano and 2Africa are being
-laid to connect Africa more directly, which should improve this over time.
+Most cables were funded by European telecom companies, connecting African
+cities to Europe first. As a result, traffic between the US and Africa
+transits through Euorpean internet exchange points, adding thousands of
+kilometers of unnecessary distance. This is visible in my results
+Lagos (8,243 km away) had a ratio of 1.15x, but Johannesburg (12,646 km)
+had a ratio of 10.45x, suggesting South Africa's routing is even more
+indirect. New cables like Equiano an
